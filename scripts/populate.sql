@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS user_projects;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS announcements;
+DROP VIEW IF EXISTS events;
 
 
 CREATE TABLE users (
@@ -40,6 +41,39 @@ CREATE TABLE announcements (
     created_ts  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
     updated_ts  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE VIEW feed_events AS
+  SELECT 
+    id AS ref_id,
+    'new_user' AS event_type,
+    name AS subject,
+    bio AS body,
+    avatar_url AS icon,
+    fellowship,
+    created_ts AS event_date
+  FROM users
+  UNION
+  SELECT
+    id AS ref_id,
+    'new_project' AS event_type,
+    name AS subject,
+    description AS body,
+    icon_url AS icon,
+    null AS fellowship,
+    created_ts AS event_date
+  FROM projects
+  UNION
+  SELECT
+    id AS ref_id,
+    'announcement' AS event_type,
+    title AS subject,
+    body,
+    null AS icon,
+    fellowship,
+    created_ts AS event_date
+  FROM announcements
+ORDER BY event_date DESC;
 
 
 INSERT INTO users
