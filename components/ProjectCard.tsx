@@ -1,24 +1,14 @@
 import Link from 'next/link'
 import styled from 'styled-components'
+
+import { User } from '../models/User'
+import { Project } from '../models/Project'
+
 import Card from './Card'
 import Markdown from './Markdown'
 
 type Props = {
-  project: Project;
-}
-
-type Project = {
-  id: number;
-  name: string;
-  description: string;
-  icon_url: string;
-  users: User[];
-}
-
-type User = {
-  id: number;
-  name: string;
-  avatar_url: string;
+  project: Omit<Project, 'created_ts' | 'updated_ts'>;
 }
 
 export default function ProjectCard({project}: Props) {
@@ -74,7 +64,7 @@ const ColumnRight = styled.div`
   flex-basis: 14rem;
 `
 
-function Participant({user}: {user: User}) {
+function Participant({user}: {user: Pick<User, 'id' | 'name' | 'avatar_url'>}) {
   return (
     <ParticipantContainer>
       <ParticipantColumnLeft>

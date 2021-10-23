@@ -1,4 +1,4 @@
-interface Configuration {
+type Configuration = {
   sqliteFile: string,
 }
 

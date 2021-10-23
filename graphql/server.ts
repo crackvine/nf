@@ -1,5 +1,5 @@
 import { ApolloServer, gql } from 'apollo-server-micro'
-import { userModel, projectModel, feedEventModel, UserRow, ProjectRow } from './models'
+import { userProvider, projectProvider, feedEventProvider, UserRow, ProjectRow } from './providers'
 
 const typeDefs = gql`
   type Query {
@@ -37,31 +37,17 @@ const typeDefs = gql`
 `
 const resolvers = {
   Query: {
-    user (root: unknown, { id }: { id: number }) {
-      return userModel.getUserById(id)
-    },
-    users (root: unknown, args: unknown) {
-      return userModel.getUsers()
-    },
-    project (root: unknown, { id }: { id: number }) {
-      return projectModel.getProjectById(id)
-    },
-    projects (root: unknown, args: unknown) {
-      return projectModel.getProjects()
-    },
-    feedEvents ( root: unknown, { limit, skip }: { limit: number, skip: number }) {
-      return feedEventModel.getFeedEvents(limit, skip)
-    }
+    user: (root: unknown, { id }: { id: number }) => userProvider.getUserById(id),
+    users: () => userProvider.getUsers(),
+    project: (root: unknown, { id }: { id: number }) => projectProvider.getProjectById(id),
+    projects: () => projectProvider.getProjects(),
+    feedEvents: ( root: unknown, { limit, skip }: { limit: number, skip: number }) => feedEventProvider.getFeedEvents(limit, skip),
   },
   User: {
-    projects (user: UserRow, args: unknown) {
-      return userModel.getUserProjects(user.id)
-    }
+    projects: (user: UserRow) => userProvider.getUserProjects(user.id),
   },
   Project: {
-    users (project: ProjectRow, args: unknown) {
-      return projectModel.getProjectUsers(project.id)
-    }
+    users: (project: ProjectRow) => projectProvider.getProjectUsers(project.id),
   },
 }
 

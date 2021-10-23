@@ -1,17 +1,22 @@
 import path from 'path'
-import SqlDatabase from './sqlDb'
+import SqlDatabase from './SqlDatabase'
+
+import { User } from '../models/User'
+import { FeedEvent } from '../models/FeedEvent'
 
 import config from '../config'
+import { Project } from 'models/Project'
+
 const sqlDb = new SqlDatabase(path.join(process.cwd(), config.sqliteFile))
 
-
-interface UserModel {
+type UserProvider = {
   getUserById: (arg0: number) => Promise<UserRow | undefined>;
   getUsersById: (arg0: readonly number[]) => Promise<UserRow[]>;
   getUsers: () => Promise<UserRow[]>;
   getUserProjects: (arg0: number) => Promise<ProjectRow[]>;
 }
-export const userModel: UserModel = {
+
+export const userProvider: UserProvider = {
   getUserById: (id: number) => sqlDb.getOne('SELECT * FROM users WHERE id = ?', [id]),
   getUsersById: (ids: readonly number[]) => sqlDb.getAll('SELECT * FROM users WHERE id IN ?', [ids]),
   getUsers: () => sqlDb.getAll('SELECT * FROM users', []),
@@ -24,13 +29,14 @@ export const userModel: UserModel = {
   ),
 }
 
-interface ProjectModel {
+type ProjectProvider = {
   getProjectById: (arg0: number) => Promise<ProjectRow | undefined>;
   getProjectsById: (arg0: readonly number[]) => Promise<ProjectRow[]>;
   getProjects: () => Promise<ProjectRow[]>;
   getProjectUsers: (arg0: number) => Promise<UserRow[]>;
 }
-export const projectModel: ProjectModel = {
+
+export const projectProvider: ProjectProvider = {
   getProjectById: (id: number) => sqlDb.getOne('SELECT * FROM projects WHERE id = ?', [id]),
   getProjectsById: (ids: readonly number[]) => sqlDb.getAll('SELECT * FROM projects WHERE id IN ?', [ids]),
   getProjects: () => sqlDb.getAll('SELECT * FROM projects', []),
@@ -43,48 +49,13 @@ export const projectModel: ProjectModel = {
     )
 }
 
-interface FeedEventModel {
-  getFeedEvents: (limit: number, skip: number) => Promise<FeedEventRow[]>;
+type FeedEventProvider = {
+  getFeedEvents: (limit: number, skip: number) => Promise<FeedEvent[]>;
 }
-export const feedEventModel: FeedEventModel = {
+
+export const feedEventProvider: FeedEventProvider = {
   getFeedEvents: (limit = 100, skip = 0) => sqlDb.getAll('SELECT * FROM feed_events LIMIT ? OFFSET ?', [limit, skip]),
 }
 
-
-export type UserRow = {
-  id: number;
-  name: string;
-  bio: string;
-  avatar_url: string;
-  fellowship: "founders" | "angels" | "writers";
-  created_ts: Date;
-  updated_ts: Date;
-}
-
-export type ProjectRow = {
-  id: number;
-  name: string;
-  description: string;
-  icon_url: string;
-  created_ts: Date;
-  updated_ts: Date;
-}
-
-export type AnnouncementRow = {
-  id: number;
-  fellowship: "founders" | "angels" | "writers" | "all";
-  title: string;
-  body: string;
-  created_ts: Date;
-  updated_ts: Date;
-}
-
-export type FeedEventRow = {
-  ref_id: number;
-  event_type: "new_user" | "new_roject" | "announcement";
-  subject: string,
-  body: string,
-  icon: string,
-  fellowship: string;
-  event_date: Date;
-}
+export type UserRow = Omit<User, 'projects'>
+export type ProjectRow = Omit<Project, 'users'>
