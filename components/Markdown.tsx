@@ -5,11 +5,13 @@ type Props = {
   children: string;
 }
 
-export default function Markdown({children}: Props) {
-  const __html = marked(children)
+const Markdown = ({ children }: Props) => {
+  const __html = marked( children )
   return (
-    <MarkdownContainer dangerouslySetInnerHTML={{__html}} />
+    <MarkdownContainer dangerouslySetInnerHTML={{ __html }} />
   )
 }
 
 const MarkdownContainer = styled.div``
+
+export default Markdown

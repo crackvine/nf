@@ -1,14 +1,13 @@
 import styled from 'styled-components'
 
-export default function Layout({children}: React.PropsWithChildren<{}>) {
-  return (
-    <Container>
-      <Main>
-        {children}
-      </Main>
-    </Container>
-  )
-}
+const Layout = ({children}: React.PropsWithChildren<{}>) => (
+  <Container>
+    <Main>
+      { children }
+    </Main>
+  </Container>
+)
+
 
 const Container = styled.div`
   min-height: 100vh;
@@ -26,3 +25,5 @@ const Main = styled.div`
   flex-direction: column;
   max-width: 600px;
 `
+
+export default Layout

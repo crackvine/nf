@@ -49,7 +49,7 @@ export default function UserPage() {
 
   return (
     <Layout>
-        <UserCard user={user} />
+      <UserCard user={user} />
     </Layout>
   )
 }

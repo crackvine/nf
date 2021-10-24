@@ -1,106 +1,27 @@
-import Link from 'next/link'
-import styled from 'styled-components'
-
 import { User } from '../models/User'
 import { Project } from '../models/Project'
-
-import Card from './Card'
-import Markdown from './Markdown'
+import { Card, CardLinksSection } from './Card'
 
 type Props = {
   user: Omit<User, 'created_ts' | 'updated_ts'>;
 }
 
-export default function UserCard({user}: Props) {
-  return (
-    <Card>
-      <Columns>
-        <ColumnLeft>
-          <Avatar src={user.avatar_url}/>
-        </ColumnLeft>
-        <ColumnRight>
-          <h2>{user.name}</h2>
-          <p>Fellowship: {user.fellowship}</p>
-          <Markdown>{user.bio}</Markdown>
-          {!!user.projects.length && (
-            <>
-              <h3>Projects:</h3>
-              {user.projects.map(p => (
-                <UserProject key={p.id} project={p} />
-              ))}
-            </>
-          )}
-        </ColumnRight>
-      </Columns>
-    </Card>
-  )
-}
+const UserCard = ({ user }: Props) => (
+  <Card
+    iconUrl={ user.avatar_url }
+    title={ user.name }
+    subTitle={ `Fellowship: ${user.fellowship}` }
+    description={ user.bio }>
+      {!!user.projects.length &&
+        <CardLinksSection sectionTitle="Projects" links={ user.projects.map(projectToLink) }/>
+      }
+  </Card>
+)
 
-const Avatar = styled.img`
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-`
+const projectToLink = (project: Project) => ({
+  iconUrl: project.icon_url,
+  text: project.name,
+  url: `/projects/${ project.id }`,
+});
 
-const Columns = styled.div`
-  display: flex;
-  flex-direction: row;
-  min-width: 21rem;
-`
-
-const ColumnLeft = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 7rem;
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin-right: 1.5rem;
-`
-
-const ColumnRight = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: 14rem;
-`
-
-function UserProject({project}: {project: Pick<Project, 'id' | 'name' | 'icon_url'>}) {
-  return (
-    <ProjectContainer>
-      <ProjectColumnLeft>
-        <ProjectIcon src={project.icon_url} />
-      </ProjectColumnLeft>
-      <ProjectColumnRight>
-        <Link href={`/projects/${project.id}`}>
-          {project.name}
-        </Link>
-      </ProjectColumnRight>
-    </ProjectContainer>
-  )
-}
-
-const ProjectIcon = styled.img`
-  border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.1);
-`
-
-const ProjectContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 1rem;
-`
-
-const ProjectColumnLeft = styled.div`
-  flex-basis: 2rem;
-  flex-shrink: 0;
-  flex-grow: 0;
-  margin-right: 1rem;
-`
-
-const ProjectColumnRight = styled.div`
-  flex-basis: 3rem;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
+export default UserCard
