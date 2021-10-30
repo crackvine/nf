@@ -8,7 +8,6 @@ const Layout = ({children}: React.PropsWithChildren<{}>) => (
   </Container>
 )
 
-
 const Container = styled.div`
   min-height: 100vh;
   padding: 0 0.5rem;

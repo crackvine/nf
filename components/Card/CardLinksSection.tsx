@@ -22,13 +22,24 @@ export const CardLinksSection = ({sectionTitle, links}: LinksSectionProps) => {
             <LinksIcon src={ link.iconUrl } alt="icon" />
           </LinksSectionColumnLeft>
           <LinksSectionColumnRight>
-            <Link href={`${ link.url }`}>{ link.text }</Link>
+            <Link href={`${ link.url }`} passHref><BasicAnchor>{ link.text }</BasicAnchor></Link>
           </LinksSectionColumnRight>
         </LinksSectionWrapper>
       ))}
     </>
   )
 }
+
+const BasicAnchor = styled.a`
+  color: #555555;
+  text-decoration: none;
+  &:visited {
+    color: #555555;
+  }
+  &:hover {
+    color: #000;
+  }
+`
 
 const LinksIcon = styled.img`
   border-radius: 3px;

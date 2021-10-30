@@ -5,7 +5,7 @@ export type Project = {
   name: string;
   description: string;
   icon_url: string;
-  created_ts: Date;
-  updated_ts: Date;
-  users: User[];
+  created_ts?: Date;
+  updated_ts?: Date;
+  users?: User[];
 }

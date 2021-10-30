@@ -30,7 +30,6 @@ type QueryVars = {
   id: number;
 }
 
-
 export default function ProjectPage() {
   const {query} = useRouter()
 

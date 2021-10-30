@@ -30,6 +30,10 @@ const Wrapper = styled.div`
   border: 1px solid #eaeaea;
   border-radius: 10px;
   background: #fff;
+  margin-bottom: 2rem;
+  a:hover & {
+    border: 1px solid #aaaaaa;
+  }
 `
 
 const Icon = styled.img`

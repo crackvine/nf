@@ -15,7 +15,7 @@ const typeDefs = gql`
     name: String!
     bio: String!
     avatar_url: String!
-    fellowship: String!
+    fellowship: Fellowship!
     projects: [Project!]!
   }
 
@@ -29,11 +29,26 @@ const typeDefs = gql`
 
   type FeedEvent {
     ref_id: Int!
-    event_type: String
+    event_type: FeedEventType!
     subject: String!
-    body: String!
-    icon_url: String!
+    body: String
+    icon_url: String
+    fellowship: Fellowship
   }
+
+  enum Fellowship {
+    founders
+    angels
+    writers
+  }
+
+  enum FeedEventType {
+    announcement
+    new_user
+    new_project
+  }
+
+
 `
 const resolvers = {
   Query: {

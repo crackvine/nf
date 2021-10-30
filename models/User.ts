@@ -7,8 +7,7 @@ export type User = {
   bio: string;
   fellowship: Fellowship;
   avatar_url: string;
-  created_ts: Date;
-  updated_ts: Date;
-  projects: Project[];
+  created_ts?: Date;
+  updated_ts?: Date;
+  projects?: Project[];
 }
-

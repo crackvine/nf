@@ -36,14 +36,9 @@ const GlobalStyle = createGlobalStyle`
     background: #f1f3f9;
   }
 
-  a {
-    color: #0070f0;
+  a, a:visited, a:active {
+    color: inherit;
     text-decoration: none;
-  }
-
-  a:hover {
-    color: #0050d0;
-    text-decoration: underline;
   }
 
   h1 {

@@ -12,7 +12,7 @@ const UserCard = ({ user }: Props) => (
     title={ user.name }
     subTitle={ `Fellowship: ${user.fellowship}` }
     description={ user.bio }>
-      {!!user.projects.length &&
+      {!!user.projects?.length &&
         <CardLinksSection sectionTitle="Projects" links={ user.projects.map(projectToLink) }/>
       }
   </Card>

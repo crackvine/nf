@@ -49,7 +49,7 @@ CREATE VIEW feed_events AS
     'new_user' AS event_type,
     name AS subject,
     bio AS body,
-    avatar_url AS icon,
+    avatar_url AS icon_url,
     fellowship,
     created_ts AS event_date
   FROM users
@@ -59,7 +59,7 @@ CREATE VIEW feed_events AS
     'new_project' AS event_type,
     name AS subject,
     description AS body,
-    icon_url AS icon,
+    icon_url,
     null AS fellowship,
     created_ts AS event_date
   FROM projects
@@ -69,8 +69,8 @@ CREATE VIEW feed_events AS
     'announcement' AS event_type,
     title AS subject,
     body,
-    null AS icon,
-    fellowship,
+    null AS icon_url,
+    null AS fellowship,
     created_ts AS event_date
   FROM announcements
 ORDER BY event_date DESC;
