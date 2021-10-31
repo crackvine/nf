@@ -8,7 +8,7 @@ type CardProps = {
   iconUrl: string,
 }
 
-export const Card: React.FunctionComponent<CardProps> = ({iconUrl, title, subTitle, description, children}) => {
+export const Card: React.FunctionComponent<CardProps> = ({ iconUrl, title, subTitle, description, children }) => {
   return (
   <Wrapper>
     <Columns>
@@ -33,6 +33,7 @@ const Wrapper = styled.div`
   margin-bottom: 2rem;
   a:hover & {
     border: 1px solid #aaaaaa;
+    background: #f8f8f8;
   }
 `
 

@@ -12,12 +12,12 @@ type SectionLink = {
   url: string,
 }
 
-export const CardLinksSection = ({sectionTitle, links}: LinksSectionProps) => {
+export const CardLinksSection = ({ sectionTitle, links }: LinksSectionProps) => {
   return (
     <>
       <h3>{ sectionTitle }</h3>
       {links.map(link => (
-        <LinksSectionWrapper key={link.url}>
+        <LinksSectionWrapper key={ link.url }>
           <LinksSectionColumnLeft>
             <LinksIcon src={ link.iconUrl } alt="icon" />
           </LinksSectionColumnLeft>

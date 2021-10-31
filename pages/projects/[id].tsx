@@ -23,7 +23,7 @@ const PROJECT_QUERY = gql`
 `
 
 type QueryData = {
-  project: Omit<Project, 'created_ts' | 'updated_ts'>;
+  project: Project;
 }
 
 type QueryVars = {
@@ -31,13 +31,13 @@ type QueryVars = {
 }
 
 export default function ProjectPage() {
-  const {query} = useRouter()
+  const { query } = useRouter()
 
-  const {data, error, loading} = useQuery<QueryData, QueryVars>(
+  const { data, error, loading } = useQuery<QueryData, QueryVars>(
     PROJECT_QUERY,
     {
       skip: !query.id,
-      variables: {id: Number(query.id)},
+      variables: { id: Number(query.id) },
     }
   )
   const project = data?.project;

@@ -1,5 +1,5 @@
-import {useRouter} from 'next/router'
-import {useQuery, gql} from '@apollo/client'
+import { useRouter } from 'next/router'
+import { useQuery, gql } from '@apollo/client'
 
 import { User } from '../../models/User'
 
@@ -24,7 +24,7 @@ const USER_QUERY = gql`
 `
 
 type QueryData = {
-  user: Omit<User, 'created_ts' | 'updated_ts'>;
+  user: User;
 }
 
 type QueryVars = {
@@ -32,13 +32,13 @@ type QueryVars = {
 }
 
 export default function UserPage() {
-  const {query} = useRouter()
+  const { query } = useRouter()
 
-  const {data, error, loading} = useQuery<QueryData, QueryVars>(
+  const { data, error, loading } = useQuery<QueryData, QueryVars>(
     USER_QUERY,
     {
       skip: !query.id,
-      variables: {id: Number(query.id)},
+      variables: { id: Number(query.id) },
     }
   )
   const user = data?.user;

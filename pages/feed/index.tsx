@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import { useQuery, gql } from '@apollo/client'
 import Link from 'next/link'
 
+import { FeedEventType } from 'models/enums'
+import { FeedEvent } from 'models/FeedEvent'
+import { Announcement } from 'models/Announcement'
+import { User } from 'models/User'
+import { Project } from 'models/Project'
+
 import Layout from 'components/Layout'
-import { FeedEvent } from '../../models/FeedEvent'
 import AnnouncementCard from 'components/AnnouncementCard'
 import ProjectCard from 'components/ProjectCard'
 import UserCard from 'components/UserCard'
-import { Announcement } from 'models/Announcement'
-import { FeedEventType } from 'models/enums'
-import { User } from 'models/User'
-import { Project } from 'models/Project'
+
 
 const FEED_QUERY = gql`
   query feed($skip: Int, $limit: Int) {
@@ -34,9 +36,7 @@ export default function FeedPage() {
 
   const {error, loading, data, fetchMore} = useQuery<QueryData>(
     FEED_QUERY,
-    {
-      variables: { skip: 0, limit: 6 },
-    }
+    { variables: { skip: 0, limit: 6 } }
   )
 
   useEffect(() => {
@@ -50,23 +50,18 @@ export default function FeedPage() {
 
   const handleScroll = () => {
     if (window.scrollY + 1 + window.innerHeight >= document.body.scrollHeight && !loading) {
-      onLoadMore()
+      fetchMore({
+        variables: {
+          skip: feedEvents.length
+        },
+        updateQuery: (prev, { fetchMoreResult }) => (
+          fetchMoreResult
+            ? { ...prev, ...{ feedEvents: [...prev.feedEvents, ...fetchMoreResult.feedEvents] }}
+            : prev
+        )
+      });
     }
   };
-
-  const onLoadMore = () => {
-    fetchMore({
-      variables: {
-        skip: feedEvents.length
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev;
-        return Object.assign({}, prev, {
-          feedEvents: [...prev.feedEvents, ...fetchMoreResult.feedEvents]
-        });
-      }
-    });
-  }
 
   if (!feedEvents || loading || error) {
     return null

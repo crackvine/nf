@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const Layout = ({children}: React.PropsWithChildren<{}>) => (
+const Layout = ({ children }: React.PropsWithChildren<{}>) => (
   <Container>
     <Main>
       { children }
