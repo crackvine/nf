@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useState, useEffect } from "react";
 import { useQuery, gql } from '@apollo/client'
 import Link from 'next/link'
 
@@ -13,8 +13,8 @@ import { User } from 'models/User'
 import { Project } from 'models/Project'
 
 const FEED_QUERY = gql`
-  query feed {
-    feedEvents {
+  query feed($skip: Int, $limit: Int) {
+    feedEvents(skip: $skip, limit: $limit) {
       event_type
       ref_id
       icon_url
@@ -30,16 +30,43 @@ type QueryData = {
 }
 
 export default function FeedPage() {
-  const { query } = useRouter()
+  const [feedEvents, setFeedEvents] = useState<FeedEvent[]>([])
 
-  const {data, error, loading} = useQuery<QueryData>(
+  const {error, loading, data, fetchMore} = useQuery<QueryData>(
     FEED_QUERY,
-    // {
-    //   skip: !query.id,
-    //   variables: { id: Number(query.id) },
-    // }
+    {
+      variables: { skip: 0, limit: 6 },
+    }
   )
-  const feedEvents = data?.feedEvents;
+
+  useEffect(() => {
+    if (data) { setFeedEvents(data.feedEvents) }
+  }, [data])
+  
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  });
+
+  const handleScroll = () => {
+    if (window.scrollY + 1 + window.innerHeight >= document.body.scrollHeight && !loading) {
+      onLoadMore()
+    }
+  };
+
+  const onLoadMore = () => {
+    fetchMore({
+      variables: {
+        skip: feedEvents.length
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        return Object.assign({}, prev, {
+          feedEvents: [...prev.feedEvents, ...fetchMoreResult.feedEvents]
+        });
+      }
+    });
+  }
 
   if (!feedEvents || loading || error) {
     return null
@@ -82,10 +109,10 @@ export default function FeedPage() {
         return <p>...failed to identify type of feed event...</p>;
     }
   }
-
+  
   return (
     <Layout>
-      { feedEvents.map(renderEventByType) }
+      { feedEvents?.map(renderEventByType) }
     </Layout>
   )
 }
