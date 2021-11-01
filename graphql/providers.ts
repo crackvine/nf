@@ -1,13 +1,16 @@
 import path from 'path'
 import SqlDatabase from './SqlDatabase'
 
-import { User } from '../models/User'
-import { FeedEvent } from '../models/FeedEvent'
-
 import config from '../config'
+import { FeedEvent } from '../models/FeedEvent'
 import { Project } from 'models/Project'
+import { User } from '../models/User'
+import { Fellowship } from 'models/enums'
 
 const sqlDb = new SqlDatabase(path.join(process.cwd(), config.sqliteFile))
+
+export type UserRow = Omit<User, 'projects'>
+export type ProjectRow = Omit<Project, 'users'>
 
 type UserProvider = {
   getUserById: (arg0: number) => Promise<UserRow | undefined>;
@@ -50,12 +53,26 @@ export const projectProvider: ProjectProvider = {
 }
 
 type FeedEventProvider = {
-  getFeedEvents: (limit: number, skip: number) => Promise<FeedEvent[]>;
+  getFeedEvents: (limit: number, skip: number, fellowship: Fellowship | 'all') => Promise<FeedEvent[]>;
 }
 
 export const feedEventProvider: FeedEventProvider = {
-  getFeedEvents: (limit = 100, skip = 0) => sqlDb.getAll('SELECT * FROM feed_events LIMIT ? OFFSET ?', [limit, skip]),
-}
+  getFeedEvents: (limit = 100, skip = 0, fellowship) => {
+    if (!fellowship || fellowship == 'all') {
+      return sqlDb.getAll('SELECT * FROM feed_events LIMIT ? OFFSET ? ', [limit, skip])
+    }
 
-export type UserRow = Omit<User, 'projects'>
-export type ProjectRow = Omit<Project, 'users'>
+    const interests = config.fellowshipInterests[fellowship]
+    const projectsCondition = interests.newProjects && `OR event_type='new_project'`
+    const fellowshipsCondition = interests.fellowships.length && `OR (event_type='new_user' AND fellowship IN ('${interests.fellowships.join('\',\'')}'))`
+
+    const sql = `
+      SELECT * FROM feed_events
+      WHERE (event_type='announcement' AND fellowship IN ('all', ?))
+      ${projectsCondition || ''}
+      ${fellowshipsCondition || ''}
+      LIMIT ? OFFSET ?
+    `
+    return sqlDb.getAll(sql, [fellowship, limit, skip])
+  }
+}

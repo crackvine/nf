@@ -70,7 +70,7 @@ CREATE VIEW feed_events AS
     title AS subject,
     body,
     null AS icon_url,
-    null AS fellowship,
+    fellowship,
     created_ts AS event_date
   FROM announcements
 ORDER BY event_date DESC;
