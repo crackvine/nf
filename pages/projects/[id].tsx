@@ -5,6 +5,9 @@ import {Project} from '../../models/Project'
 
 import Layout from 'components/Layout'
 import ProjectCard from 'components/ProjectCard'
+import Spinner from 'components/util/Spinner'
+import BasicButton from 'components/util/BasicButton'
+import ErrorBox from 'components/util/ErrorBox'
 
 const PROJECT_QUERY = gql`
   query project($id: Int!) {
@@ -31,24 +34,29 @@ type QueryVars = {
 }
 
 export default function ProjectPage() {
-  const { query } = useRouter()
+  const router = useRouter()
 
   const { data, error, loading } = useQuery<QueryData, QueryVars>(
     PROJECT_QUERY,
     {
-      skip: !query.id,
-      variables: { id: Number(query.id) },
+      skip: !router.query.id,
+      variables: { id: Number(router.query.id) },
     }
   )
   const project = data?.project;
 
-  if (!project || loading || error) {
-    return null
+  if (loading) {
+    return <Layout><Spinner /></Layout>
+  }
+
+  if (!project || error) {
+    return <ErrorBox message="...error retrieving project..." />
   }
 
   return (
     <Layout>
       <ProjectCard project={project} />
+      <BasicButton onClickHandler={() => router.back()} buttonText="go back" />
     </Layout>
   )
 }

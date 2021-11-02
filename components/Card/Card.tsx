@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Markdown from '../Markdown'
+import Markdown from '../util/Markdown'
 
 type CardProps = {
   title: string,

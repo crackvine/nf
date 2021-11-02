@@ -7,14 +7,14 @@ type Props = {
 }
 
 export const ProjectCard = ({ project }: Props) => (
-    <Card
-      iconUrl={ project.icon_url }
-      title={ project.name }
-      description={ project.description }>
-        {!!project.users?.length &&
-          <CardLinksSection sectionTitle="Users" links={ project.users.map(userToLink) }/>
-        }
-    </Card>
+  <Card
+    iconUrl={ project.icon_url }
+    title={ project.name }
+    description={ project.description }>
+      {!!project.users?.length &&
+        <CardLinksSection sectionTitle="Users" links={ project.users.map(userToLink) }/>
+      }
+  </Card>
 )
 
 const userToLink = (user: User) => ({

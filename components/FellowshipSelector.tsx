@@ -13,13 +13,13 @@ export const FellowshipSelector = ({selectedFellowship, onChangeFellowship }: Pr
   <Wrapper>
     <Selector onChange={onChangeFellowship}>
       <RadioButton>
-        <input type="radio" value="founders" checked={ selectedFellowship==='founders' } name="fellowship" />Founders
+        <input type="radio" value="founders" defaultChecked={ selectedFellowship==='founders' } name="fellowship" />Founders
       </RadioButton>
       <RadioButton>
-        <input type="radio" value="angels" checked={ selectedFellowship==='angels' } name="fellowship" />Angels
+        <input type="radio" value="angels" defaultChecked={ selectedFellowship==='angels' } name="fellowship" />Angels
       </RadioButton>
       <RadioButton>
-        <input type="radio" value="writers" checked={ selectedFellowship==='writers' } name="fellowship" />Writers
+        <input type="radio" value="writers" defaultChecked={ selectedFellowship==='writers' } name="fellowship" />Writers
         </RadioButton>
     </Selector>
   </Wrapper>

@@ -7,6 +7,8 @@ import { FeedEvent } from 'models/FeedEvent'
 import Layout from 'components/Layout'
 import Feed from 'components/Feed'
 import { FellowshipSelector } from 'components/FellowshipSelector';
+import Spinner from 'components/util/Spinner'
+import ErrorBox from 'components/util/ErrorBox';
 
 const FEED_QUERY = gql`
   query feed($skip: Int, $limit: Int, $fellowship: Fellowship) {
@@ -62,8 +64,8 @@ export default function FeedPage() {
     setFellowship(e.target.value as Fellowship)
   }
 
-  if (!feedEvents || loading || error) {
-    return null
+  if (!feedEvents || error) {
+    return <ErrorBox message="...error loading feed..." />
   }
   
   return (
@@ -72,7 +74,7 @@ export default function FeedPage() {
         <title>On Deck Newsfeed</title>
       </Head>
       <FellowshipSelector selectedFellowship={fellowship} onChangeFellowship={onChangeFellowship} />
-      <Feed feedEvents={feedEvents} />
+      {(!feedEvents || loading) ? <Spinner /> : <Feed feedEvents={feedEvents} />}
     </Layout>
   )
 }

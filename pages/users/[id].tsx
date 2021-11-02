@@ -5,6 +5,9 @@ import { User } from '../../models/User'
 
 import Layout from 'components/Layout'
 import UserCard from 'components/UserCard'
+import Spinner from 'components/util/Spinner'
+import BasicButton from 'components/util/BasicButton'
+import ErrorBox from 'components/util/ErrorBox'
 
 const USER_QUERY = gql`
   query user($id: Int!) {
@@ -32,24 +35,29 @@ type QueryVars = {
 }
 
 export default function UserPage() {
-  const { query } = useRouter()
+  const router = useRouter()
 
   const { data, error, loading } = useQuery<QueryData, QueryVars>(
     USER_QUERY,
     {
-      skip: !query.id,
-      variables: { id: Number(query.id) },
+      skip: !router.query.id,
+      variables: { id: Number(router.query.id) },
     }
   )
   const user = data?.user;
   
-  if (!user || loading || error) {
-    return null
+  if (loading) {
+    return <Layout><Spinner /></Layout>
+  }
+
+  if (!user || error) {
+    return <ErrorBox message="..error retrieving user..." />
   }
 
   return (
     <Layout>
       <UserCard user={user} />
+      <BasicButton onClickHandler={() => router.back()} buttonText="go back" />
     </Layout>
   )
 }
