@@ -6,9 +6,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <ApolloProvider client={client}>
-          <Component {...pageProps} />
+      <ThemeProvider theme={ theme }>
+        <ApolloProvider client={ client }>
+          <Component { ...pageProps } />
         </ApolloProvider>
       </ThemeProvider>
     </>
