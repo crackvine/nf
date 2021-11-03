@@ -5,6 +5,7 @@ type InterestSettings = {
 
 type Configuration = {
   sqliteFile: string;
+  feedEventsPerPage: number;
   fellowshipInterests: {
     founders: InterestSettings;
     angels: InterestSettings;
@@ -13,7 +14,8 @@ type Configuration = {
 }
 
 const config: Configuration = {
-  sqliteFile : 'db.sqlite',
+  sqliteFile: 'db.sqlite',
+  feedEventsPerPage: 6,
   fellowshipInterests: {
     founders: { newProjects: true, fellowships: ['angels', 'founders'] },
     angels: { newProjects: true, fellowships: ['angels', 'founders'] },

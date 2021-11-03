@@ -9,6 +9,7 @@ import { Announcement } from 'models/Announcement'
 import AnnouncementCard from 'components/AnnouncementCard'
 import ProjectCard from 'components/ProjectCard'
 import UserCard from 'components/UserCard'
+import ErrorBox from 'components/util/ErrorBox'
 
 type Props = {
   feedEvents: FeedEvent[];
@@ -52,7 +53,7 @@ const renderEventByType = (feedEvent: FeedEvent) => {
       )
 
     default:
-      return <p>...failed to identify type of feed event...</p>;
+      return <ErrorBox message="...failed to identify type of feed event..." />;
   }
 }
 

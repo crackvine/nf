@@ -9,6 +9,7 @@ import Feed from 'components/Feed'
 import { FellowshipSelector } from 'components/FellowshipSelector';
 import Spinner from 'components/util/Spinner'
 import ErrorBox from 'components/util/ErrorBox';
+import config from 'config'
 
 const FEED_QUERY = gql`
   query feed($skip: Int, $limit: Int, $fellowship: Fellowship) {
@@ -33,11 +34,12 @@ export default function FeedPage() {
 
   const {error, loading, data, fetchMore} = useQuery<QueryData>(
     FEED_QUERY,
-    { variables: { skip: 0, limit: 6, fellowship } }
+    { variables: { skip: 0, limit: config.feedEventsPerPage, fellowship } }
   )
 
   useEffect(() => {
-    if (data) { setFeedEvents(data.feedEvents) }
+    setFeedEvents(data?.feedEvents || [])
+    return () => setFeedEvents([])
   }, [data])
   
   useEffect(() => {
@@ -51,11 +53,17 @@ export default function FeedPage() {
         variables: {
           skip: feedEvents.length
         },
-        updateQuery: (prev, { fetchMoreResult }) => (
-          fetchMoreResult
-            ? { ...prev, ...{ feedEvents: [...prev.feedEvents, ...fetchMoreResult.feedEvents] }}
-            : prev
-        )
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return Object.assign({}, prev, {
+            feedEvents: [
+              ...prev.feedEvents,
+              ...fetchMoreResult.feedEvents.filter(
+                newItem => !prev.feedEvents.some(item => item.event_type === newItem.event_type && item.ref_id === newItem.ref_id)
+              )
+            ]
+          });
+        }
       });
     }
   };
@@ -74,7 +82,7 @@ export default function FeedPage() {
         <title>On Deck Newsfeed</title>
       </Head>
       <FellowshipSelector selectedFellowship={fellowship} onChangeFellowship={onChangeFellowship} />
-      {(!feedEvents || loading) ? <Spinner /> : <Feed feedEvents={feedEvents} />}
+      { loading ? <Spinner /> : <Feed feedEvents={feedEvents} /> }
     </Layout>
   )
 }
